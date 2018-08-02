@@ -129,8 +129,8 @@ export class HourlySchedule implements ParsedSchedule {
   public daysOfWeek: boolean[] = [true, true, true, true, true, false, false];
   public frequency: number = 2;
 
-  private start: moment.Moment;
-  private end: moment.Moment;
+  private start: moment.Moment = moment('08:00', TIME_FORMAT24);
+  private end: moment.Moment = moment('17:00', TIME_FORMAT24);
 
   public get startTime() {
     return this.start.format(TIME_FORMAT24);
