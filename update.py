@@ -5,7 +5,7 @@ from subprocess import run
 
 cd = Path(path.dirname(__file__))
 
-run([r"C:\Program Files\Git\git-bash.exe", "-c", "git pull"])
+run([r"C:\Program Files\Git\git-bash.exe", "-c", "git fetch --all && git reset --hard origin/master"])
 
 rmtree(cd / 'src')
 copytree(cd / 'dist/ecqemailmanager', cd)
