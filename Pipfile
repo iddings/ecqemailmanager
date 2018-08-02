@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+python-ldap = "*"
+apscheduler = "*"
+flask-jwt-extended = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+flask = "*"
+wsgiserver = "*"
+pyinstaller = "*"
+flask-sqlalchemy = "*"
+
+[requires]
+python_version = "3.7"

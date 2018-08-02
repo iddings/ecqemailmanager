@@ -12,3 +12,5 @@ rmtree(cd / 'src')
 rmtree(cd / 'ecqemailmanager')
 copytree(cd / 'dist/ecqemailmanager', cd / 'ecqemailmanager')
 rmtree(cd / 'dist')
+
+run(["python", "-m", "pipenv", "install"])
