@@ -1,10 +1,18 @@
-import os
+import argparse
 
+activate_parser = argparse.ArgumentParser()
+activate_parser.add_argument("--activate-script", required=False, default=None)
+args, _ = activate_parser.parse_known_args()
+
+if args.activate_script:
+    with open(args.activate_script) as afp:
+        exec(afp.read())
+
+import os
 import sys
 sys.path.extend([os.getcwd()])
 
 from wsgiserver import WSGIServer
-
 
 import ecqemailmanager.upgrade_scripts
 

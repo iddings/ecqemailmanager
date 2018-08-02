@@ -7,7 +7,7 @@ print(
 """
 What should be built? Make a selection:
 1. Whole App
-2. Frontend Only
+2. Backend Only
 """
 )
 
@@ -23,7 +23,7 @@ CWD = PurePath(path.dirname(__file__))
 DIST_PATH = CWD / 'dist'
 SRC_PATH = CWD / 'src'
 
-if selection == 2:
+if selection == 1:
     print("Building frontend...")
     chdir(str(SRC_PATH / 'frontend/ecqemailmanager'))
 
@@ -40,14 +40,12 @@ if selection == 2:
 
 out_path = DIST_PATH / "ecqemailmanager"
 
-if selection == 1:
+print("Bundling backend...")
+if path.exists(out_path):
+    rmtree(out_path)
+copytree(SRC_PATH / 'backend/ecqemailmanager', out_path)
 
-    print("Bundling backend...")
-    if path.exists(out_path):
-        rmtree(out_path)
-    copytree(SRC_PATH / 'backend/ecqemailmanager', out_path)
-
-    print("Done.")
+print("Done.")
 
 print("Copying compiled assets to dist folder...")
 static_path = out_path / 'static'
