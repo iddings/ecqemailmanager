@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-python-ldap = {path = ".\\python_ldap-3.1.0-cp37-cp37m-win_amd64.whl"}
+python-ldap = "3.1.0"
 apscheduler = "*"
 flask-jwt-extended = "*"
 flask-marshmallow = "*"
