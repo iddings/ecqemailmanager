@@ -1,0 +1,36 @@
+<h3 class="padded">Email Settings</h3>
+
+<div class="section-column padded" [formGroup]="emailForm">
+  <mat-form-field>
+
+    <mat-chip-list #chipList>
+
+      <mat-chip *ngFor="let email of emails" [selectable]="true"
+               [removable]="true" (removed)="removeEmail(email)">
+        {{email}}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+
+      <input placeholder="Email Addresses"
+             [matChipInputFor]="chipList"
+             [matChipInputSeparatorKeyCodes]="SEPARATOR_KEYS_CODES"
+             [matChipInputAddOnBlur]="true"
+             (matChipInputTokenEnd)="addEmailFromInput();emailInputElement.value='';"
+             [formControl]="emailInput"
+             [matAutocomplete]="auto"
+             #emailInputElement>
+
+    </mat-chip-list>
+
+    <mat-autocomplete (optionSelected)="addEmailFromAutocomplete($event.option.value);emailInputElement.value=''" #auto="matAutocomplete">
+      <mat-option *ngFor="let email of allEmails | search:emailInputElement.value | sort" [value]="email">{{email}}</mat-option>
+    </mat-autocomplete>
+
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Email Subject" type="text" formControlName="subject">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Email Body" type="text" formControlName="text">
+  </mat-form-field>
+</div>

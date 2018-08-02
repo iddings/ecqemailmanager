@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>Hourly Schedule Wizard</h1>
+<div mat-dialog-content ngForm #form class="dialog-content">
+
+  <mat-form-field>
+    <span matPrefix>Every</span>
+    <input name="frequency" [(ngModel)]="schedule.frequency" style="text-align: center" matInput #freq>
+    <span matSuffix>hour{{ freq.value !== '1' ? 's' : '' }}</span>
+  </mat-form-field>
+
+  <div>
+
+    <mat-form-field>
+      <input name="startTime" [(ngModel)]="schedule.startTime" placeholder="Start" type="time" matInput>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input name="endTime" [(ngModel)]="schedule.endTime" placeholder="End" type="time" matInput>
+    </mat-form-field>
+
+  </div>
+
+  <div>
+    <div *ngFor="let day of WEEKDAYS;let $i=index">
+      <mat-checkbox [name]="day" [(ngModel)]="schedule.daysOfWeek[$i]">{{day}}</mat-checkbox>
+    </div>
+  </div>
+
+</div>
+<div mat-dialog-actions class="flex-end">
+  <button mat-button [mat-dialog-close]>Cancel</button>
+  <button mat-button [disabled]="form.invalid" [mat-dialog-close]="schedule">Done</button>
+</div>

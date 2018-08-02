@@ -1,0 +1,49 @@
+<h3 class="padded">Task Settings</h3>
+
+<div class="section-row flex-grow">
+
+  <div class="task-list">
+    <mat-nav-list>
+      <mat-list-item [class.active]="activeTaskSeq===task.task_seq" (click)="activeTaskSeq=task.task_seq" *ngFor="let task of macro.state.tasks; let $index = index">Task #{{ $index+1 }}</mat-list-item>
+      <mat-list-item (click)="newTask()">
+        <mat-icon matListIcon>add</mat-icon>
+        Add Task
+      </mat-list-item>
+    </mat-nav-list>
+  </div>
+
+  <div class="task-pane" [formGroup]="taskForm">
+
+    <div class="task section-column"
+         [class.visible]="activeTaskSeq===task.task_seq"
+         *ngFor="let task of macro.state.tasks;let $i = index"
+         [formGroupName]="task.task_seq">
+
+      <div class="report-field section-row flex-space-between">
+        <div class="report-title">
+          <div class="report-name" [title]="(task.report_file | reportFromId)?.source_file">{{(task.report_file | reportFromId)?.source_file }}</div>
+          <div class="author" *ngIf="task.report_file">Created By: {{(task.report_file | reportFromId)?.source_user }}</div>
+        </div>
+        <button class="report-change" mat-button (click)="changeReport(task)">Choose Report</button>
+      </div>
+
+      <mat-form-field>
+        <input type="text" matInput formControlName="outputFile" placeholder="Output Filename">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select formControlName="format" placeholder="Report Format">
+          <mat-option *ngFor="let format of FORMATS" [value]="format.format">{{format.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="flex-end section-row">
+        <button mat-button (click)="refreshReport(task.report_file)">Refresh Report</button>
+        <button mat-button (click)="macro.removeTask(task)">Remove Task</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

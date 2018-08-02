@@ -1,0 +1,67 @@
+<div *ngIf="macro; else noMacro" class="macro section-column">
+
+  <div class="section-row flex-space-between form-actions">
+
+    <div></div>
+
+    <h2 class="report-title">
+      <span>{{ macro.state.name }}</span>
+      <button (click)="editName()" mat-icon-button style="margin-left: 16px">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </h2>
+
+    <div style="text-align: right;">
+
+      <span matTooltip="Undo">
+        <button mat-icon-button
+                (click)="macro.undoChanges()"
+                [disabled]="!macro.canUndoChanges">
+          <mat-icon>undo</mat-icon>
+        </button>
+      </span>
+
+      <span matTooltip="Redo">
+        <button mat-icon-button
+                (click)="macro.redoChanges()"
+                [disabled]="!macro.canRedoChanges">
+          <mat-icon>redo</mat-icon>
+        </button>
+      </span>
+
+      <button mat-icon-button
+              matTooltip="Run Report"
+              [disabled]="macro.canSaveChanges"
+              (click)="runMacro(macro)">
+        <mat-icon>cached</mat-icon>
+      </button>
+
+      <button mat-icon-button
+              matTooltip="Delete Report"
+              (click)="deleteMacro(macro)">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="section-row macro-pane">
+
+    <div class="section-column">
+
+      <editor-email [macro]="macro"></editor-email>
+
+      <editor-tasks [macro]="macro"></editor-tasks>
+
+    </div>
+
+    <editor-schedule [macro]="macro"></editor-schedule>
+
+  </div>
+
+</div>
+<div *ngIf="macro" class="flex-grow"></div>
+<ng-template #noMacro class="no-macro">
+  Select a report
+</ng-template>

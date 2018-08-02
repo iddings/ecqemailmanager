@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Daily Schedule Wizard</h1>
+<div mat-dialog-content class="dialog-content" ngForm #form>
+
+  <mat-form-field>
+    <input name="time" [(ngModel)]="schedule.time" placeholder="Time" type="time" matInput>
+  </mat-form-field>
+
+  <div>
+    <div *ngFor="let day of WEEKDAYS;let $i=index">
+      <mat-checkbox [name]="day" [(ngModel)]="schedule.daysOfWeek[$i]">{{day}}</mat-checkbox>
+    </div>
+  </div>
+
+</div>
+<div mat-dialog-actions class="flex-end">
+  <button mat-button [mat-dialog-close]>Cancel</button>
+  <button mat-button [disabled]="form.invalid" [mat-dialog-close]="schedule">Done</button>
+</div>

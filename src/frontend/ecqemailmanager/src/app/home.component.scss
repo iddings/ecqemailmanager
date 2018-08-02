@@ -1,0 +1,22 @@
+.mat-sidenav-container {
+  height: 100%;
+}
+
+.mat-sidenav {
+  width: 300px;
+}
+
+.mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.mat-nav-list .mat-list-item.active {
+  font-weight: 700;
+}
+
+.search-box {
+  width: calc(100% - 32px);
+  margin: 16px;
+}

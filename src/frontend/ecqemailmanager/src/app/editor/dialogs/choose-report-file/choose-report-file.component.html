@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>
+  <div class="section-row flex-space-between">
+    <span>Choose Report File</span>
+    <mat-slide-toggle [(ngModel)]="importMode">Import New Report</mat-slide-toggle>
+  </div>
+</h1>
+<div mat-dialog-content>
+
+  <div *ngIf="importMode" class="section-column">
+    <div class="section-row">
+      <mat-form-field>
+        <mat-select placeholder="User" (valueChange)="loadUserFiles($event)" [(ngModel)]="selectedUser">
+          <mat-option *ngFor="let user of users" [value]="user">
+            {{user}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Search" #importSearch>
+      </mat-form-field>
+    </div>
+    <mat-radio-group [(ngModel)]="selectedUserReport" class="section-column">
+      <mat-radio-button [value]="file" [title]="file"
+                       *ngFor="let file of selectedUserReports | search:importSearch.value">
+        {{file}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div *ngIf="!importMode" class="section-column">
+    <mat-form-field>
+      <input matInput placeholder="Search" #search>
+    </mat-form-field>
+    <mat-radio-group [(ngModel)]="selectedExistingReport" class="section-column">
+      <mat-radio-button [value]="file" [title]="file.source_file"
+        *ngFor="let file of existingReports | search:search.value:'source_user':'source_file'">
+        [{{file.source_user}}] {{file.source_file}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+</div>
+<div mat-dialog-actions class="flex-end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [disabled]="(importMode && !selectedUserReport) || (!importMode && !selectedExistingReport)" (click)="done()">Next</button>
+</div>
+
+

@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Monthly Schedule Wizard</h1>
+<div mat-dialog-content ngForm #form class="dialog-content">
+
+  <mat-form-field>
+    <input name="time" [(ngModel)]="schedule.time" placeholder="Time" type="time" matInput>
+  </mat-form-field>
+
+  <div class="day-list">
+    <div *ngFor="let day of DAYS">
+      <mat-checkbox [name]="'day'+day" [(ngModel)]="schedule.days[day]">{{day}}</mat-checkbox>
+    </div>
+  </div>
+
+</div>
+<div mat-dialog-actions class="flex-end">
+  <button mat-button [mat-dialog-close]="false">Cancel</button>
+  <button mat-button [disabled]="form.invalid" [mat-dialog-close]="schedule">Done</button>
+</div>

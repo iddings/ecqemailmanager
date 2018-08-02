@@ -1,0 +1,64 @@
+:host {
+
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+
+}
+
+.form-actions {
+  width: 100%;
+  > * {
+    flex: 1;
+  }
+}
+
+.macro {
+  width: 100%;
+  > * {
+    flex: 1;
+    &:first-of-type {
+      margin-right: 32px;
+    }
+  }
+}
+
+.macro-pane > * {
+  flex-grow: 1;
+  width: 50%;
+}
+
+.schedule {
+  padding-left: 64px;
+  padding-right: 16px;
+}
+
+
+
+.padded {
+  padding: 0 16px;
+}
+
+.form-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.edit-toggle {
+  margin-bottom: 16px;
+}
+
+.wizards {
+  margin-bottom: 16px;
+}
+
+.report-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,19 @@
+<h3 style="padding-bottom: 14px;">Schedule</h3>
+
+<div>
+  <mat-slide-toggle [formControl]="enabledControl">Report Enabled</mat-slide-toggle>
+</div>
+
+<p>This report will run {{ macro.state.schedule | scheduleDescription }}.</p>
+
+<h4>Schedule Wizards</h4>
+
+<div class="wizards section-row flex-space-around">
+
+  <button mat-button (click)="$wizards.openWizard('hourly', macro.state.schedule)">Hourly</button>
+
+  <button mat-button (click)="$wizards.openWizard('daily', macro.state.schedule)">Daily/Weekly</button>
+
+  <button mat-button (click)="$wizards.openWizard('monthly', macro.state.schedule)">Monthly</button>
+
+</div>

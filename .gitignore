@@ -1,5 +1,4 @@
-config-dev.json
 idea/
 *.db
 *.pyc\
-*.json
+/*.json

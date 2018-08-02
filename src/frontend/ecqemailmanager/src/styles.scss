@@ -1,0 +1,68 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$app-primary: mat-palette($mat-blue-grey);
+$app-accent:  mat-palette($mat-amber);
+
+$app-theme: mat-light-theme($app-primary, $app-accent);
+
+@include angular-material-theme($app-theme);
+
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  @extend .mat-app-background;
+  font-family: 'Roboto', sans-serif;
+}
+
+@function theme-color($palette, $hue: default) {
+  @return mat-color(map-get($app-theme, $palette), $hue)
+}
+
+.section-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-end {
+  justify-content: flex-end;
+}
+
+.flex-space-around {
+  justify-content: space-around;
+}
+
+.flex-space-between {
+  justify-content: space-between;
+}
+
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.mat-dialog-content.dialog-content {
+  @extend .section-column;
+  overflow: visible;
+}
+
+.mat-radio-label {
+  max-width: 100%;
+}
+
+.mat-radio-label-content {
+  max-width: calc(100% - 28px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 8px 0;
+}
+

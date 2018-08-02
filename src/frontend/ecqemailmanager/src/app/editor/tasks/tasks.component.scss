@@ -1,0 +1,66 @@
+.task-list {
+
+  min-width: 150px;
+  text-transform: capitalize;
+
+  .mat-list-item.active {
+    font-weight: 700;
+  }
+
+}
+
+.task-pane {
+
+  max-width: calc(100% - 166px);
+
+  .task {
+
+    max-width: 100%;
+
+    display: none;
+
+    &.visible {
+      display: block;
+    }
+
+    .mat-form-field {
+      width: 100%;
+    }
+
+    .report-field {
+      font-size: 16px;
+      margin: 8px 0;
+
+      .report-title {
+        overflow: hidden;
+      }
+
+      .report-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+      }
+
+      .author {
+        font-style: italic;
+      }
+
+      .report-change {
+        flex-shrink: 0;
+      }
+
+    }
+
+  }
+
+}
+
+h3.padded {
+  padding-left: 16px;
+}
+
+:host {
+  padding: 16px;
+  padding-left: 0;
+}

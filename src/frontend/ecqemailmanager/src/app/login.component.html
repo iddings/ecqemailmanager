@@ -1,0 +1,19 @@
+<div class="login-form" [formGroup]="loginForm">
+
+  <h3>Report Distribution Manager</h3>
+
+  <p *ngIf="message" class="message">{{ message }}</p>
+
+  <mat-form-field>
+    <input formControlName="username" matInput type="text" placeholder="DOMAIN\Username">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input formControlName="password" matInput type="password" placeholder="Password">
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-button (click)="login()">Login</button>
+  </div>
+
+</div>

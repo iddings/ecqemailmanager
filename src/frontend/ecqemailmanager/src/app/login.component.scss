@@ -1,0 +1,36 @@
+@import '../styles';
+
+:host {
+
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.login-form {
+
+  flex: 0 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h3 {
+    text-align: center;
+    width: 260px;
+  }
+
+  .message {
+    color: theme-color(warn)
+  }
+
+  .actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+}

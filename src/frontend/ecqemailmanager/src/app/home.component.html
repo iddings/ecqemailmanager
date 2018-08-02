@@ -1,0 +1,31 @@
+<mat-sidenav-container>
+
+  <mat-sidenav #snav mode="over">
+    <mat-form-field class="search-box">
+      <input matInput placeholder="Search" #search>
+    </mat-form-field>
+    <mat-nav-list>
+      <h3 mat-subheader>Reports</h3>
+      <mat-list-item (click)="newMacro();snav.close()">
+        <mat-icon matListIcon>add</mat-icon>
+        Add New Report
+      </mat-list-item>
+      <mat-list-item
+        (click)="snav.close(); $macro.setCurrent(macro)"
+        [class.active]="false"
+        *ngFor="let macro of allMacros | async | search:search.value:'state.name' | sort:'state.name'">
+        {{ macro.state.name }}
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar>
+      <button (click)="search.value='';snav.toggle()" mat-icon-button><mat-icon>menu</mat-icon></button>
+      <span>Report Manager</span>
+    </mat-toolbar>
+    <editor [macro]="macro"></editor>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
+
