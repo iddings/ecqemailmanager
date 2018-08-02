@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 
 from wsgiserver import WSGIServer
 
@@ -7,6 +8,8 @@ import ecqemailmanager.upgrade_scripts
 
 from ecqemailmanager import app, config, db, scheduler
 from ecqemailmanager.models import UpgradeScript
+
+print(os.getcwd())
 
 with app.app_context():
     db.create_all()
