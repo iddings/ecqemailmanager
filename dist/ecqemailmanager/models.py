@@ -100,7 +100,12 @@ class ImportedFile(db.Model):
 
     @property
     def filename(self):
-        return f"{self.source_user}~{self.source_file.replace(sep, '_')}~{self.id}.{self.extension}"
+        source_file = (
+            self.source_file
+                .replace(sep, '_')
+                .replace(' ', '-')
+        )
+        return f"{self.source_user}~{source_file}~{self.id}.{self.extension}"
 
     @property
     def display_name(self):
