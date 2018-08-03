@@ -55,4 +55,6 @@ copytree(SRC_PATH / 'frontend/ecqemailmanager/dist/ecqemailmanager', static_path
 
 print("Done.")
 
+run(['git', 'add', 'dist'])
+
 print("Build complete.")
