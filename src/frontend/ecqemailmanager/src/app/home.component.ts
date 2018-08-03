@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {Macro, MacroService} from "./macro/macro.service";
 import {DialogsService} from "./editor/dialogs/dialogs.service";
 import {ActivatedRoute} from "@angular/router";
+import {ApiService} from "./api/api.service";
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,12 @@ export class HomeComponent implements OnInit{
   allMacros: Observable<Macro[]>;
   macro: Macro;
 
-  constructor(public $dialog: DialogsService, public $macro: MacroService, private $route: ActivatedRoute) {
+  constructor(
+    public $dialog: DialogsService,
+    public $macro: MacroService,
+    private $route: ActivatedRoute,
+    private $api: ApiService
+  ) {
     this.allMacros = $macro.all();
   }
 
@@ -36,6 +42,17 @@ export class HomeComponent implements OnInit{
           .subscribe(macro => this.$macro.setCurrent(macro))
       })
 
+  }
+
+  logout() {
+    this.$dialog.confirm({
+      title: 'Confirm',
+      content: 'Are you sure you want to logout?'
+    })
+      .whenConfirmed
+      .subscribe(() => this.$api.logout().subscribe(() => {
+        location.reload();
+      }))
   }
 
 }

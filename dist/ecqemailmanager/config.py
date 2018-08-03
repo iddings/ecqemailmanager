@@ -22,7 +22,7 @@ class _Config:
     secret_key: str = None
 
     # maintenance config
-    purge_unused_report_time: str = "00:00"
+    clean_directories_time: str = "00:00"
 
     # database config
     database_uri: str = None
@@ -33,7 +33,7 @@ class _Config:
 
     # ecq config
     ecq_application: str = None
-    ecq_temp_dir: str = None
+    ecq_working_dir: str = None
     ecq_cqwr_exe: str = None
     ecq_username: str = None
     ecq_password: str = None

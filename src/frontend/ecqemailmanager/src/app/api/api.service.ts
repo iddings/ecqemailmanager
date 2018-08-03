@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {MacroData, AppData, ReportFile} from "../models";
 import {catchError, map} from "rxjs/operators";
-import {Tokens, TokenService} from "./token.service";
-import {of} from "rxjs/internal/observable/of";
+import {RawTokenPair, TokenService} from "./token.service";
+import {of} from "rxjs";
+import * as moment from 'moment';
 
 export interface ApiResponse<T> {
   response: T
@@ -27,20 +28,37 @@ export class ApiService {
 
   login = (username: string, password: string) =>
     this.$http
-      .post<ApiResponse<Tokens>>('/api/auth', {
+      .post<ApiResponse<RawTokenPair>>('/api/auth', {
         username: username,
         password: password
       })
       .pipe(
         map(resp => {
-          this.$tokens.access = resp.response.access;
-          this.$tokens.refresh = resp.response.refresh;
+
+          resp.response.access.expires *= 1000;
+          resp.response.refresh.expires *= 1000;
+
+          this.$tokens.access(resp.response.access);
+          this.$tokens.refresh(resp.response.refresh);
+
           return resp;
+
         }),
         catchError((err: HttpErrorResponse) =>
           of(err.error as ApiErrorResponse)
         )
       );
+
+  public logout = () =>
+    this.$http
+      .post('/api/auth/logout', {
+        access: this.$tokens.access().token,
+        refresh: this.$tokens.refresh().token
+      })
+      .pipe(map(r => {
+        this.$tokens.invalidate();
+        return r;
+      }));
 
   allMacros = () =>
     this.$http

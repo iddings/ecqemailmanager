@@ -20,10 +20,14 @@ export class MacroService {
 
     this.$api
       .allMacros()
-      .subscribe(data => {
-        this._all = data.map(m => new Macro(m));
-        this._emitAll();
-      });
+      .subscribe(
+        data => {
+          this._all = data.map(m => new Macro(m));
+          this._emitAll();
+        },
+        error => {
+          this._emitAll();
+        });
 
   }
 
@@ -38,6 +42,15 @@ export class MacroService {
   }
 
   all = (): Observable<Macro[]> => this._allSubject;
+
+  getMacro = (id: number) =>
+    this.all()
+      .pipe(map(all => {
+        for (let macro of all)
+            if (macro.state.id === id)
+              return macro;
+        return null;
+      }));
 
   deleteMacro = (macro: Macro) =>
     this.$api.deleteMacro(macro.state.id)

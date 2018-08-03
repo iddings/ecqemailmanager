@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from "@angular/router";
 import {Macro, MacroService} from "./macro/macro.service";
 import {Observable} from "rxjs/internal/Observable";
-import {first, map} from "rxjs/operators";
+import {catchError, first, map} from "rxjs/operators";
+import {of} from "rxjs/internal/observable/of";
+import {throwError} from "rxjs/internal/observable/throwError";
 
 @Injectable()
 export class MacroResolverService implements Resolve<Macro> {
@@ -11,15 +13,17 @@ export class MacroResolverService implements Resolve<Macro> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Macro> {
 
-    return this.$macro.all()
+    return this.$macro.getMacro(parseInt(route.paramMap.get('id')))
       .pipe(
         first(),
-        map(all => {
-          for (let macro of all)
-            if (macro.state.id === parseInt(route.paramMap.get('id'))) {
-              return macro;
-            }
-          this.$router.navigate(['']);
+        map(macro => {
+
+          console.log(macro);
+
+          if (macro) return macro;
+
+          //this.$router.navigate(['']);
+          return null;
 
         })
       );

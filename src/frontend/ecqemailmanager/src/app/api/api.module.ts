@@ -5,6 +5,7 @@ import {TokenService} from "./token.service";
 import {TokenInjectorService} from "./token-injector.service";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {ApiService} from "./api.service";
+import {AppRoutingModule} from "../app-routing.module";
 
 @NgModule({
   imports: [

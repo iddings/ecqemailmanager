@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.$tokens.whenTokensAreValid()
+    this.$tokens.whenTokensValid()
       .pipe(first())
       .subscribe(() => {
         this.$router.navigateByUrl(this.$route.snapshot.paramMap.get('next') || '');

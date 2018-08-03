@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Tokens, TokenService} from "./token.service";
+import {TokenPair, RawTokenPair, TokenService} from "./token.service";
 import {HttpClient, HttpErrorResponse, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {throwError} from "rxjs/index";
+import {of, throwError} from "rxjs/index";
 import {ActivatedRoute, Router} from "@angular/router";
 import {catchError, flatMap} from "rxjs/operators";
 import {ApiErrorResponse, ApiResponse} from "./api.service";
@@ -18,13 +18,13 @@ export class TokenInjectorService implements HttpInterceptor {
 
   private _injectAccessToken(req: HttpRequest<any>) {
     return req.clone({
-      setHeaders: {Authorization: `Bearer ${this.$token.access}`}
+      setHeaders: {Authorization: `Bearer ${this.$token.access().token}`}
     })
   }
 
   private _injectRefreshToken(req: HttpRequest<any>) {
     return req.clone({
-      setHeaders: {Authorization: `Bearer ${this.$token.refresh}`}
+      setHeaders: {Authorization: `Bearer ${this.$token.refresh().token}`}
     })
   }
 
@@ -32,9 +32,8 @@ export class TokenInjectorService implements HttpInterceptor {
 
     let errorResponseCode = (err.error as ApiErrorResponse).response.code;
 
-    if (this._isApiRequest(originalReq.url, true)) {
-      this.$route.url
-        .subscribe(url => this._redirectToLogin(url[0].path));
+    if (this._isApiRequest(originalReq.url, 'auth/refresh')) {
+      this.$token.invalidate();
       this._redirectToLogin();
       return throwError(err);
     }
@@ -42,10 +41,10 @@ export class TokenInjectorService implements HttpInterceptor {
     if (Math.floor(errorResponseCode / 100) === 1) {
 
       return this.$http
-        .post<ApiResponse<Tokens>>('/api/auth/refresh', {})
+        .post<ApiResponse<Partial<RawTokenPair>>>('/api/auth/refresh', {})
         .pipe(
           flatMap(resp => {
-            this.$token.access = resp.response.access;
+            this.$token.access(resp.response.access);
             return handler.handle(this._injectAccessToken(originalReq));
           })
         )
@@ -55,29 +54,39 @@ export class TokenInjectorService implements HttpInterceptor {
 
   }
 
-  private _redirectToLogin(next?: string) {
-    console.log(next);
-    this.$router.navigate(['login'], {
-        queryParams: {
-          next: next
-        }
-      });
+  private _redirectToLogin(next: string='') {
+    this.$router.navigateByUrl('login');
   }
 
-  private _isApiRequest(url: string, checkIsRefresh: boolean=false) {
+  private _isApiRequest(url: string, checkSuffix: string='.*?') {
     const locationPrefix = `^(${location.protocol}//${location.host})?/?`;
-    if (checkIsRefresh)
-      return url.match(new RegExp(`${locationPrefix}api/auth/refresh$`));
-    return url.match(new RegExp(`${locationPrefix}api(/.*)?`));
+    return url.match(new RegExp(`${locationPrefix}api/${checkSuffix}$`));
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    if (this._isApiRequest(req.url, true))
+
+
+    if (this._isApiRequest(req.url, 'auth'))
+      return next.handle(req);
+
+    if (this._isApiRequest(req.url, 'auth/refresh'))
       req = this._injectRefreshToken(req);
-    else if (this._isApiRequest(req.url))
-      req = this._injectAccessToken(req);
+
+    else if (this._isApiRequest(req.url)) {
+
+      if (this.$token.tokensAreValid())
+        req = this._injectAccessToken(req);
+
+      else {
+        this._redirectToLogin();
+        return throwError('not logged in');
+      }
+
+    }
+
     let handler = next.handle(req);
-    return handler.pipe(catchError(e => this._interceptResponse(e, req, next)))
+    return handler.pipe(catchError(e => this._interceptResponse(e, req, next)));
+
   }
 
 }

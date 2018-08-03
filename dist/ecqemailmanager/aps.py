@@ -1,3 +1,5 @@
+import logging
+
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -15,3 +17,5 @@ scheduler = BackgroundScheduler(
         misfire_grace_time=15*60
     )
 )
+
+logging.getLogger('apscheduler').setLevel(logging.INFO)

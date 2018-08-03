@@ -76,6 +76,11 @@ for callback, error in jwt_error_responses.items():
     getattr(jwt, callback)(partial(error_response, error))
 
 
+@jwt.token_in_blacklist_loader
+def token_in_blacklist(token):
+    return bool(RevokedToken.query.filter_by(token=token['jti']).first())
+
+
 @api.route('/auth', methods=['POST'])
 def api_auth():
 
@@ -88,17 +93,34 @@ def api_auth():
     except ldap.INVALID_CREDENTIALS:
         return error_response(Error.INVALID_LOGIN)
     else:
+        access_token = create_access_token(username)
+        refresh_token = create_refresh_token(username)
+
+        access_expires = decode_token(access_token)['exp']
+        refresh_expires = decode_token(refresh_token)['exp']
+
         return response(dict(
-            access=create_access_token(username),
-            refresh=create_refresh_token(username)
+            access=dict(
+                token=access_token,
+                expires=access_expires
+            ),
+            refresh=dict(
+                token=refresh_token,
+                expires=refresh_expires
+            )
         ))
 
 
 @api.route('/auth/refresh', methods=['POST'])
 @jwt_refresh_token_required
 def api_auth_refresh():
+    token = create_access_token(get_jwt_identity())
+    expires = decode_token(token)['exp']
     return response(dict(
-        access=create_access_token(get_jwt_identity())
+        access=dict(
+            token=token,
+            expires=expires
+        )
     ))
 
 
@@ -107,14 +129,13 @@ def auth_logout():
 
     token_types: Iterable[Type[RevokedToken]] = (RevokedAccessToken, RevokedRefreshToken)
     for t in token_types:
-        raw_token = request.json.get(f'{t.TYPE}_token', None)
+        raw_token = request.json.get(f'{t.TYPE}', None)
         if not raw_token:
             return error_response(Error.BAD_REQUEST, f'no {t.TYPE} token specified')
         token = decode_token(raw_token)
         revoked_token = t(
             token=token['jti'],
-            user_id=token['identity'],
-            expires_date=datetime.fromtimestamp(token['exp'])
+            date_expires=datetime.fromtimestamp(token['exp'])
         )
         db.session.add(revoked_token)
     db.session.commit()
@@ -133,6 +154,7 @@ def api_macro_all():
 
 
 @api.route('/macro/<int:id>', methods=['POST'])
+@jwt_required
 def api_macro(id: int):
 
     with db.session.no_autoflush:
@@ -183,6 +205,7 @@ def api_macro(id: int):
 
 
 @api.route('/macro', methods=['POST'])
+@jwt_required
 def api_macro_new():
     macro = Macro(name=request.json['name'], email_subject=request.json['name'])
     db.session.add(macro)
@@ -191,6 +214,7 @@ def api_macro_new():
 
 
 @api.route('/appData')
+@jwt_required
 def api_app_data():
     eq_mf_files = schemas.imported_file.dump(ImportedFile.query.all(), many=True)[0]
     with scandir(config.ecq_user_dir) as it:
@@ -203,6 +227,7 @@ def api_app_data():
 
 
 @api.route('/userFolder/<user>')
+@jwt_required
 def api_user_folder(user):
 
     def get_files(folder: str):
@@ -221,6 +246,7 @@ def api_user_folder(user):
 
 
 @api.route('/userFolder/<user>/import/<path:file_name>', methods=['POST'])
+@jwt_required
 def api_import_file(user: str, file_name: str):
     file: ImportedFile = ImportedFile.query.filter_by(source_user=user, source_file=file_name).first()
     if file:
@@ -231,6 +257,7 @@ def api_import_file(user: str, file_name: str):
 
 
 @api.route('/macro/<int:id>', methods=['DELETE'])
+@jwt_required
 def api_macro_delete(id):
     macro = Macro.query.filter_by(id=id).first()
     macro.schedule = None
@@ -241,6 +268,7 @@ def api_macro_delete(id):
 
 
 @api.route('/file/<id>/reload')
+@jwt_required
 def api_file_reload(id):
     file: ImportedFile = ImportedFile.query.filter_by(id=id).first()
     file.copy_file_from_source()
@@ -248,6 +276,7 @@ def api_file_reload(id):
 
 
 @api.route('/macro/<int:id>/run')
+@jwt_required
 def api_run_now(id):
     try:
         assert Macro.query.filter_by(id=id).first()
@@ -260,6 +289,7 @@ def api_run_now(id):
 
 
 @api.route('/macro/refreshAllJobs')
+@jwt_required
 def api_macro_refresh_all_jobs():
     all_macros = Macro.query.all()
     for macro in all_macros:

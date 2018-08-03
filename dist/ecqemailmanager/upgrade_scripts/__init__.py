@@ -7,3 +7,5 @@ from .strip_format_switches import StripFormatSwitchesScript
 from .reimport_all_reports import ReimportAllReportsScript
 from .reload_all_jobs_i2 import ReloadAllJobsI2Script
 from .reload_all_jobs_i3 import ReloadAllJobsI3Script
+from .rename_all_files import RenameAllFilesScript
+from .remove_old_maintenance_job import RemoveOldMaintenanceJobScript

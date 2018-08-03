@@ -1,5 +1,5 @@
 from datetime import datetime
-from os import path
+from os import path, sep
 from re import sub
 from shutil import copy2
 from typing import List, TypeVar
@@ -100,7 +100,7 @@ class ImportedFile(db.Model):
 
     @property
     def filename(self):
-        return f"{self.id}.{self.extension}"
+        return f"{self.source_user}~{self.source_file.replace(sep, '_')}~{self.id}.{self.extension}"
 
     @property
     def display_name(self):
@@ -120,17 +120,17 @@ class ImportedFile(db.Model):
 
     def copy_file_from_source(self):
         src_path = path.join(config.ecq_user_dir, self.source_user, self.source_file)
-        dst_path = path.join(config.ecq_temp_dir, self.filename)
+        dst_path = path.join(config.ecq_working_dir, self.filename)
         copy2(src_path, dst_path)
         self.strip_format_switches()
         format_file = f"{src_path[:-3]}.cqf"
         if path.exists(format_file):
-            format_dst = path.join(config.ecq_temp_dir, f"{self.id}.cqf")
+            format_dst = path.join(config.ecq_working_dir, f"{self.id}.cqf")
             copy2(format_file, format_dst)
 
     def strip_format_switches(self):
         pattern = '/(wks|wk1|dif|html|xls|qdb|csv|pdf|xml|output)(=([\'"]).*?\\3)?'
-        with open(path.join(config.ecq_temp_dir, self.filename), 'r+') as fp:
+        with open(path.join(config.ecq_working_dir, self.filename), 'r+') as fp:
             lines = [
                 sub(pattern, '', line)
                 for line in fp

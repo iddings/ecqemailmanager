@@ -8,6 +8,7 @@ import ecqemailmanager.upgrade_scripts
 
 from ecqemailmanager import app, config, db, scheduler
 from ecqemailmanager.models import UpgradeScript
+from ecqemailmanager.maintenance import schedule_maintenance
 
 with app.app_context():
     db.create_all()
@@ -28,6 +29,7 @@ with app.app_context():
                 db.session.commit()
 
 scheduler.start()
+schedule_maintenance()
 
 if config.development_mode:
     os.environ['FLASK_ENV'] = 'development'

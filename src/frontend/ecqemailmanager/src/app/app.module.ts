@@ -17,10 +17,9 @@ import {MacroModule} from "./macro/macro.module";
 import {AppComponent} from "./app.component";
 import {HomeComponent} from "./home.component";
 import {LoginComponent} from "./login.component";
-import {RouterModule} from "@angular/router";
-import {ROUTES} from "./app-routing";
 import {MacroResolverService} from "./macro-resolver.service";
 import {SortPipeModule} from "./sort-pipe/sort-pipe.module";
+import {AppRoutingModule} from "./app-routing.module";
 
 @NgModule({
   imports: [
@@ -35,21 +34,17 @@ import {SortPipeModule} from "./sort-pipe/sort-pipe.module";
     MatSidenavModule,
     MatToolbarModule,
 
+    AppRoutingModule,
     ApiModule,
     SearchPipeModule,
     SortPipeModule,
     EditorModule,
-    MacroModule,
-
-    RouterModule.forRoot(ROUTES)
+    MacroModule
   ],
   declarations: [
     AppComponent,
     HomeComponent,
     LoginComponent
-  ],
-  providers: [
-    MacroResolverService
   ],
   bootstrap: [AppComponent]
 })
