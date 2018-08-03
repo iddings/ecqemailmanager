@@ -100,11 +100,9 @@ class ImportedFile(db.Model):
 
     @property
     def filename(self):
-        source_file = (
-            self.source_file
-                .replace(sep, '_')
-                .replace(' ', '-')
-        )
+
+        # noinspection PyTypeChecker
+        source_file = sub(r'[/\\]', '_', self.source_file).replace(' ', '-')
         return f"{self.source_user}~{source_file}~{self.id}.{self.extension}"
 
     @property
