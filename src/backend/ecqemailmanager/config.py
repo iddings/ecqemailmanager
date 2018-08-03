@@ -37,7 +37,6 @@ class _Config:
     ecq_cqwr_exe: str = None
     ecq_username: str = None
     ecq_password: str = None
-    ecq_macro_header: str = None
     ecq_user_dir: str = None
 
 

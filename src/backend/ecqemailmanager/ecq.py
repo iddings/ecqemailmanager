@@ -68,7 +68,12 @@ class TempMacro(object):
     @staticmethod
     def parse_macro(macro: Macro):
 
-        lines = [config.ecq_macro_header]
+        lines = [(
+            "-- This program was generated automatically.\n"
+            "-- Copyright \u00A9 2018 Iddings Software Designs\n"
+            "-- All rights reserved."
+        )]
+
         attachments = []
 
         for task in macro.tasks:  # type: MacroTask
