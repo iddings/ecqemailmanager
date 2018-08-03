@@ -6,6 +6,11 @@ import {Macro, MacroService} from "../../macro/macro.service";
 import {debounceTime} from "rxjs/operators";
 import {AppDataService} from "../../app-data/app-data.service";
 
+const EMAIL_REGEXP =
+    /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+
+const SEPARATOR_REGEXP = /[\s,;]+/g;
+
 @Component({
   selector: 'editor-email',
   templateUrl: './email.component.html',
@@ -33,9 +38,7 @@ export class EmailComponent implements OnChanges {
       .subscribe(emails => this.allEmails = emails);
 
     this.emailInput = this.$fb.control("", [
-      Validators.required,
-      Validators.minLength(5),
-      Validators.email
+      Validators.required
     ]);
 
     this.emailForm = this.$fb.group({
@@ -84,8 +87,9 @@ export class EmailComponent implements OnChanges {
 
   addEmailFromInput() {
     const value = this.emailInput.value.toLowerCase();
-    if (!value || this.emailInput.invalid) return;
-    this.emails.add(value);
+    for (let chunk of value.split(SEPARATOR_REGEXP))
+      if (chunk.match(EMAIL_REGEXP))
+        this.emails.add(chunk);
     this._commitForm();
     this.$appData.addEmailAddress(value);
     this.emailInput.patchValue('');
