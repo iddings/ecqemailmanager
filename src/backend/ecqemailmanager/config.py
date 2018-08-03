@@ -38,6 +38,8 @@ class _Config:
     ecq_username: str = None
     ecq_password: str = None
     ecq_user_dir: str = None
+    ecq_execution_timeout: int = 600
+    ecq_execution_max_retries: int = 1
 
 
 config = _Config()

@@ -8,7 +8,7 @@ from .models import Macro, MacroTask
 from threading import BoundedSemaphore
 
 
-exec_lock = BoundedSemaphore(value=1)
+exec_lock = BoundedSemaphore(value=2)
 
 log = logging.getLogger(__name__)
 
@@ -55,6 +55,7 @@ class TempMacro(object):
         pass
 
     def exec(self):
+
         cmd = [
             config.ecq_cqwr_exe,
             "/user:{}".format(config.ecq_username),
@@ -63,7 +64,26 @@ class TempMacro(object):
             "/noprogress",
             os.path.join(config.ecq_working_dir, 'tmp', self.macro_name)
         ]
-        subprocess.run(cmd, cwd=config.ecq_working_dir)
+
+        retry_count = 0
+
+        while retry_count <= config.ecq_execution_max_retries:
+
+            try:
+                res = subprocess.run(
+                    cmd, cwd=config.ecq_working_dir, timeout=config.ecq_execution_timeout
+                )
+                assert res.returncode == 0
+            except AssertionError:
+                log.error(f'[{self.macro.id}] error: {res.stderr}')
+            except subprocess.TimeoutExpired:
+                log.error(f'[{self.macro.id}] error: timeout')
+            else:
+                return
+
+            retry_count += 1
+
+        log.error(f'[{self.macro.id}] error: max retries reached. aborting.')
 
     @staticmethod
     def parse_macro(macro: Macro):
