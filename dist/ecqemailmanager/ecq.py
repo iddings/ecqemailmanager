@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+from time import sleep
 
 from .config import config
 from .models import Macro, MacroTask
@@ -14,21 +15,54 @@ log = logging.getLogger(__name__)
 
 
 def exec_macro(macro_id: int):
+
     try:
+
         log.info(f'[{macro_id}] schedule for macro triggered.')
+
         from ecqemailmanager import app
         with app.app_context():
+
             macro = Macro.query.filter_by(id=macro_id).first()
-            if macro.enabled:
-                with exec_lock:
-                    log.info(f'[{macro_id}] execution lock acquired.')
-                    with TempMacro(macro) as runner:
-                        log.info(f'[{macro_id}] beginning execution')
-                        runner.exec()
-                    log.info(f'[{macro_id}] execution complete')
-                    log.info(f'[{macro_id}] execution lock released')
-            else:
+
+            if not macro.enabled:
                 log.info(f'[{macro_id}] macro is disabled. skipping.')
+                return
+
+            with TempMacro(macro) as runner:
+
+                retry_count = 0
+                cmd = runner.get_command()
+
+                while retry_count <= config.ecq_execution_max_retries:
+
+                    log.info(
+                        f'[{macro_id}] beginning execution. attempt: '
+                        f'{retry_count + 1}/{config.ecq_execution_max_retries + 1}'
+                    )
+
+                    try:
+                        with exec_lock:
+                            log.info(f'[{macro_id}] execution lock acquired.')
+                            res = subprocess.run(
+                                cmd, cwd=config.ecq_working_dir, timeout=config.ecq_execution_timeout
+                            )
+                        assert res.returncode == 0
+                    except AssertionError:
+                        log.error(f'[{macro.id}] error: {res.stderr}')
+                    except subprocess.TimeoutExpired:
+                        log.error(f'[{macro.id}] error: timeout')
+                    else:
+                        log.error(f'[{macro.id}] execution successful.')
+                        return
+                    finally:
+                        log.info(f'[{macro_id}] execution lock released')
+
+                    retry_count += 1
+                    sleep(5)  # give other macros a chance to run
+
+                log.error(f'[{macro.id}] error: max retries reached. aborting.')
+
     except:
         log.error(f'[{macro_id}] uncaught error executing macro.')
 
@@ -54,9 +88,8 @@ class TempMacro(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
-    def exec(self):
-
-        cmd = [
+    def get_command(self):
+        return [
             config.ecq_cqwr_exe,
             "/user:{}".format(config.ecq_username),
             "/password:{}".format(config.ecq_password),
@@ -64,26 +97,6 @@ class TempMacro(object):
             "/noprogress",
             os.path.join(config.ecq_working_dir, 'tmp', self.macro_name)
         ]
-
-        retry_count = 0
-
-        while retry_count <= config.ecq_execution_max_retries:
-
-            try:
-                res = subprocess.run(
-                    cmd, cwd=config.ecq_working_dir, timeout=config.ecq_execution_timeout
-                )
-                assert res.returncode == 0
-            except AssertionError:
-                log.error(f'[{self.macro.id}] error: {res.stderr}')
-            except subprocess.TimeoutExpired:
-                log.error(f'[{self.macro.id}] error: timeout')
-            else:
-                return
-
-            retry_count += 1
-
-        log.error(f'[{self.macro.id}] error: max retries reached. aborting.')
 
     @staticmethod
     def parse_macro(macro: Macro):
