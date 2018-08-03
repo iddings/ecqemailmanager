@@ -8,7 +8,7 @@ from .models import Macro, MacroTask
 from threading import BoundedSemaphore
 
 
-exec_lock = BoundedSemaphore(value=config.ecq_concurrent_executions)
+exec_lock = BoundedSemaphore(value=config.ecq_concurrent_execution_limit)
 
 log = logging.getLogger(__name__)
 

@@ -40,7 +40,7 @@ class _Config:
     ecq_user_dir: str = None
     ecq_execution_timeout: int = 600
     ecq_execution_max_retries: int = 1
-    ecq_concurrent_executions: int = 2
+    ecq_concurrent_execution_limit: int = 2
 
 
 config = _Config()
