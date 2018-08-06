@@ -9,3 +9,5 @@ rmtree(cd / 'src')
 rmtree(cd / 'ecqemailmanager')
 copytree(cd / 'dist/ecqemailmanager', cd / 'ecqemailmanager')
 rmtree(cd / 'dist')
+if path.exists(cd / 'ecqemailmanager/__pycache__'):
+    rmtree(cd / 'ecqemailmanager/__pycache__')
