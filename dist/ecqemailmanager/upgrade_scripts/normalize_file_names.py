@@ -3,7 +3,7 @@ from .base import BaseUpgradeScript
 
 class NormalizeFileNamesScript(BaseUpgradeScript):
 
-    __scriptname__ = 'normalize_file_names.py~r3'
+    __scriptname__ = 'normalize_file_names.py~r4'
 
     @staticmethod
     def upgrade():

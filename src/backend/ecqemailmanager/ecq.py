@@ -103,12 +103,12 @@ class TempMacro(object):
     @staticmethod
     def parse_macro(macro: Macro):
 
-        lines = [(
-            "-- This program was generated automatically.\n"
-            "-- Copyright \u00A9 2018 Iddings Software Designs\n"
-            "-- All rights reserved.\n" +
+        lines = [
+            "-- This program was generated automatically.",
+            "-- Copyright \u00A9 2018 Iddings Software Designs",
+            "-- All rights reserved.",
             datetime.now().isoformat()
-        )]
+        ]
 
         attachments = []
 
