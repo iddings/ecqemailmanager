@@ -1,6 +1,8 @@
 import logging
 import os
 import subprocess
+
+from datetime import datetime
 from time import sleep
 
 from .config import config
@@ -104,7 +106,8 @@ class TempMacro(object):
         lines = [(
             "-- This program was generated automatically.\n"
             "-- Copyright \u00A9 2018 Iddings Software Designs\n"
-            "-- All rights reserved."
+            "-- All rights reserved.\n" +
+            datetime.now().isoformat()
         )]
 
         attachments = []
