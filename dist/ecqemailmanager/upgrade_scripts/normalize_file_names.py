@@ -3,7 +3,7 @@ from .base import BaseUpgradeScript
 
 class NormalizeFileNamesScript(BaseUpgradeScript):
 
-    __scriptname__ = 'normalize_file_names.py'
+    __scriptname__ = 'normalize_file_names.py~r2'
 
     @staticmethod
     def upgrade():
@@ -14,7 +14,7 @@ class NormalizeFileNamesScript(BaseUpgradeScript):
         from ..models import ImportedFile
 
         with scandir(config.ecq_working_dir) as it:
-            current_files = list(it)
+            current_files = [e.path for e in it if e.is_file()]
 
         log = logging.getLogger(NormalizeFileNamesScript.__scriptname__)
 
