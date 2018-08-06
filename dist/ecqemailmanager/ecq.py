@@ -107,7 +107,7 @@ class TempMacro(object):
             "-- This program was generated automatically.",
             "-- Copyright \u00A9 2018 Iddings Software Designs",
             "-- All rights reserved.",
-            datetime.now().isoformat()
+            f"-- {datetime.now().isoformat()}"
         ]
 
         attachments = []
