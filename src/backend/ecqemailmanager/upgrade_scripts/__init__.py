@@ -10,3 +10,4 @@ from .reload_all_jobs_i3 import ReloadAllJobsI3Script
 from .rename_all_files import RenameAllFilesScript
 from .remove_old_maintenance_job import RemoveOldMaintenanceJobScript
 from .rename_all_format_files import RenameAllFormatFilesScript
+from .normalize_file_names import NormalizeFileNamesScript
