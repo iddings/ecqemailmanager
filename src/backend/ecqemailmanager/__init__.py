@@ -1,5 +1,6 @@
 import logging
 
+from logging import handlers
 from os import environ, path, makedirs
 
 from flask import Flask, send_from_directory
@@ -52,7 +53,11 @@ if not path.exists(log_dir):
     makedirs(log_dir)
 
 root_logger = logging.root
-handler = logging.FileHandler(log_file_name + log_file_suffix)
+handler = handlers.TimedRotatingFileHandler(
+    log_file_name + log_file_suffix,
+    when='midnight',
+    backupCount=14
+)
 handler.setFormatter(logging.Formatter('[%(asctime)s] (%(name)s): %(message)s'))
 root_logger.addHandler(handler)
 root_logger.setLevel(logging.INFO)

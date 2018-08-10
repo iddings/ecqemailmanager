@@ -36,33 +36,7 @@ def exec_maintenance():
                 unlink(entry.path)
 
 
-def roll_log_file():
-
-    from . import log_file_name, log_file_suffix, log_dir
-
-    yesterday = (datetime.now().today() - timedelta(days=1)).strftime('%Y_%m_%d')
-
-    rename(
-        log_file_name + log_file_suffix,
-        log_file_name + yesterday + log_file_suffix
-    )
-
-    keep_cutoff = datetime.now() - timedelta(days=15)
-
-    with scandir(log_dir) as it:
-        for entry in it:  # type: DirEntry
-            if datetime.fromtimestamp(entry.stat().st_mtime) < keep_cutoff:
-                unlink(entry.path)
-
-
 def schedule_maintenance():
-
-    scheduler.add_job(
-        roll_log_file,
-        id='MAINT_MANAGE_LOGS',
-        trigger=CronTrigger(hour=0, minute=0),
-        replace_existing=True
-    )
 
     sched_time = strptime(config.clean_directories_time, '%H:%M')
     scheduler.add_job(
