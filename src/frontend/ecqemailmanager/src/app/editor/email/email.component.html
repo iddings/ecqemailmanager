@@ -15,14 +15,14 @@
              [matChipInputFor]="chipList"
              [matChipInputSeparatorKeyCodes]="SEPARATOR_KEYS_CODES"
              [matChipInputAddOnBlur]="true"
-             (matChipInputTokenEnd)="addEmailFromInput();emailInputElement.value='';"
+             (matChipInputTokenEnd)="addEmail(emailInputElement.value);emailInputElement.value='';"
              [formControl]="emailInput"
              [matAutocomplete]="auto"
              #emailInputElement>
 
     </mat-chip-list>
 
-    <mat-autocomplete (optionSelected)="addEmailFromAutocomplete($event.option.value);emailInputElement.value=''" #auto="matAutocomplete">
+    <mat-autocomplete (optionSelected)="addEmail($event.option.value);emailInputElement.value=''" #auto="matAutocomplete">
       <mat-option *ngFor="let email of allEmails | search:emailInputElement.value | sort" [value]="email">{{email}}</mat-option>
     </mat-autocomplete>
 

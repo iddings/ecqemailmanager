@@ -79,19 +79,14 @@ export class EmailComponent implements OnChanges {
     }, {emitEvent: !locked});
   }
 
-  addEmailFromAutocomplete(email) {
-    this.emailInput.patchValue(email);
-    this.addEmailFromInput();
-    this.emailInput.patchValue('');
-  }
-
-  addEmailFromInput() {
-    const value = this.emailInput.value.toLowerCase();
+  addEmail(value: string) {
+    value = value.toLowerCase();
     for (let chunk of value.split(SEPARATOR_REGEXP))
-      if (chunk.match(EMAIL_REGEXP))
+      if (chunk.match(EMAIL_REGEXP)) {
         this.emails.add(chunk);
+        this.$appData.addEmailAddress(value);
+      }
     this._commitForm();
-    this.$appData.addEmailAddress(value);
     this.emailInput.patchValue('');
   }
 
