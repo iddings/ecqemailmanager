@@ -115,12 +115,15 @@ class TempMacro(object):
         for task in macro.tasks:  # type: MacroTask
             report_file_full_path = os.path.join(config.ecq_working_dir, task.report_file.filename)
             line = "run"
+            filename = task.formatted_output_filename()
             if task.has_output:
-                filename = task.formatted_output_filename()
-                line += f'/{task.format}="{filename}"'
                 attachments.append(f"{filename}.{TempMacro.get_format_extension(task.format)}")
+                if task.report_file.extension.lower() == 'eq':
+                    line += f'/{task.format}="{filename}"'
             line += f" {report_file_full_path}"
             lines.append(line)
+            if task.has_output and task.report_file.extension.lower() == 'mf':
+                lines.append(f'rreplace {filename}.{TempMacro.get_format_extension(task.format)}')
 
         attachment_clause = ' '.join([
             f'/attach-binary:"{os.path.join(config.ecq_user_dir, config.ecq_username, a)}"'
