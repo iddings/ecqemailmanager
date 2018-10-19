@@ -128,7 +128,7 @@ class ImportedFile(db.Model):
         self.strip_format_switches()
         format_file = f"{src_path[:-3]}.cqf"
         if path.exists(format_file):
-            format_dst = path.join(config.ecq_working_dir, f"{self.id}.cqf")
+            format_dst = path.join(config.ecq_working_dir, f"{self.filename[:-3]}.cqf")
             copy2(format_file, format_dst)
 
     def strip_format_switches(self):
